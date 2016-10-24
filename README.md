@@ -1,5 +1,9 @@
 # docker-oozie
 
+Pull
+
+    docker pull pluk/oozie
+
 Uploading sharelib into hdfs
 
     docker run --rm pluk/oozie oozie-setup.sh sharelib create -fs hdfs://namenode:port
