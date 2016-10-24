@@ -4,21 +4,21 @@ MAINTAINER Andrey Tretyakov <andrey.tretyakov.a@gmail.com>
 ENV HADOOP_VERSION  2.6.0
 ENV HADOOP_HOME     /usr/local/hadoop
 
-ENV OOZIE_VERSION    4.2.0
-ENV OOZIE_HOME       /usr/local/oozie
+ENV OOZIE_VERSION   4.2.0
+ENV OOZIE_HOME      /usr/local/oozie
 
-ENV MAVEN_VERSION    3.3.9
+ENV MAVEN_VERSION   3.3.9
 
-ENV PATH             $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$OOZIE_HOME/bin
+ENV PATH            $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$OOZIE_HOME/bin
 
-RUN addgroup oozie && adduser -G oozie -D -H oozie && \
-    addgroup hadoop && adduser -G hadoop -D -H hadoop
+RUN addgroup hadoop && adduser -G hadoop -D -H hadoop && \
+    addgroup oozie && adduser -G oozie -D -H oozie
 
 RUN apk add --update curl bash zip && \
-    mkdir /tmp && \
+    mkdir -m 777 /tmp && \
     curl -kL http://www-eu.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz | tar -zx -C /tmp && \
     mv /tmp/hadoop-$HADOOP_VERSION /usr/local/hadoop && chown -R hadoop:hadoop /usr/local/hadoop && \
-# Install Maven
+# Download Maven
     curl -kL http://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -zx -C /tmp && \
 # Download Oozie
     curl -kL http://www-eu.apache.org/dist/oozie/$OOZIE_VERSION/oozie-$OOZIE_VERSION.tar.gz | tar -zx -C /tmp && \
@@ -40,6 +40,6 @@ EXPOSE 11000 11001
 USER oozie
 
 RUN $OOZIE_HOME/bin/oozie-setup.sh prepare-war
-
+WORKDIR $OOZIE_HOME
 
 ENTRYPOINT ["/bin/bash"]
